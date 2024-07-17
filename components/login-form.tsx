@@ -6,30 +6,56 @@ import { z } from "zod"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-
+import { cookies } from "next/headers"
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
+  nickname: z.string().min(2).max(50),
 })
 
 export default function LoginForm() {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
+            nickname: "",
           },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        console.log(form)
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+        const validationRes = await fetch(`${siteUrl}/api/account/validate?nickname=${values.nickname}`)
+        const { isValid } = await validationRes.json()
+
+        if (isValid) {
+            const res = await fetch(`${siteUrl}/api/account/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            })
+
+            if (res.ok) {
+                const { token } = await res.json()
+                
+            } else {
+                alert("로그인 실패!")
+            }
+        } else {
+            form.setError("nickname", {
+                type: "manual",
+                message: "사용자 이름이 이미 존재합니다.",
+            })
+        }
     }
-    
+
     return (
     <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
                 control={form.control}
-                name="username"
+                name="nickname"
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel>사용자 이름</FormLabel>
