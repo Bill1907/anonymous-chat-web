@@ -8,5 +8,4 @@ export async function GET(request: NextRequest) {
 
     const res = await fetch(`${url}/user/account/nick-name/validate?nickName=${nickname}`)
     return Response.json({ isValid : !!res.ok });
-
 }
