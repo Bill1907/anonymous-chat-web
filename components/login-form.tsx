@@ -6,13 +6,14 @@ import { z } from "zod"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { cookies } from "next/headers"
+import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
   nickname: z.string().min(2).max(50),
 })
 
 export default function LoginForm() {
+    const router = useRouter()
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -22,7 +23,7 @@ export default function LoginForm() {
 
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(form)
+
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
         const validationRes = await fetch(`${siteUrl}/api/account/validate?nickname=${values.nickname}`)
         const { isValid } = await validationRes.json()
@@ -38,7 +39,9 @@ export default function LoginForm() {
 
             if (res.ok) {
                 const { token } = await res.json()
-                
+                document.cookie = `token=${token}`
+                alert("로그인 성공!")
+                router.push('/chat/main')
             } else {
                 alert("로그인 실패!")
             }
