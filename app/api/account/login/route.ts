@@ -1,5 +1,6 @@
 
 export async function POST(request: Request) {
+
     const url = process.env.API_URL;
 
     const { nickname } = await request.json()
@@ -16,6 +17,7 @@ export async function POST(request: Request) {
         const { token } = await res.json()
         return Response.json({ token });
     } else {
+        console.log('here??/')
         return Response.error();
     }
 }

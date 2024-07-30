@@ -3,9 +3,9 @@ import type { NextRequest } from 'next/server'
  
 export function middleware(request: NextRequest) {
     const token = request.cookies.get('token')?.value
-
+    
     if(request.nextUrl.pathname.startsWith('/chat')) {
-        if (!token) {    
+        if (!token) {
             return NextResponse.redirect(new URL('/', request.url))
         } else {
             const requestHeaders = new Headers(request.headers)
@@ -31,6 +31,6 @@ export const config = {
        * - _next/image (image optimization files)
        * - favicon.ico (favicon file)
        */
-      '/((?!api|_next/static|_next/image|favicon.ico).*)',
+      '/((?!_next/static|_next/image|favicon.ico).*)',
     ],
-  }
+}
