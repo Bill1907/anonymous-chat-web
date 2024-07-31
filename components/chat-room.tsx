@@ -1,3 +1,4 @@
+import ChatInput from "./chat-input"
 import ChatListSse from "./chat-list-sse"
 import { Card, CardContent, CardHeader } from "./ui/card"
 
@@ -7,15 +8,14 @@ type ChatRoomProps = {
 
 export default function ChatRoom({ chatRoomId }: ChatRoomProps) {
     return (
-        <main className="flex min-h-screen w-full justify-center items-center p-24">
-            <Card>
-                <CardHeader>
-                    Chat Room: {chatRoomId}
-                </CardHeader>
-                <CardContent>
-                    <ChatListSse chatRoomId={chatRoomId} />
-                </CardContent>
-            </Card>
-        </main>
+        <Card className="sm:w-96 lg:w-1/3">
+            <CardHeader>
+                Chat Room: {chatRoomId}
+            </CardHeader>
+            <CardContent>
+                <ChatListSse chatRoomId={chatRoomId} />
+                <ChatInput id={chatRoomId}/>
+            </CardContent>
+        </Card>
     )
 }

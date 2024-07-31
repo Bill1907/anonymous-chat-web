@@ -25,8 +25,6 @@ export default function LoginForm() {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-        // const validationRes = await fetch(`${siteUrl}/api/account/validate?nickname=${values.nickname}`)
-        // const { isValid } = await validationRes.json()
 
         const res = await fetch(new URL('/api/account/login', siteUrl), {
             method: "POST",
@@ -35,8 +33,6 @@ export default function LoginForm() {
             },
             body: JSON.stringify(values),
         })
-
-        console.log(res)
 
         if (res.ok) {
             const { token } = await res.json()
