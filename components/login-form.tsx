@@ -25,31 +25,22 @@ export default function LoginForm() {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-        const validationRes = await fetch(`${siteUrl}/api/account/validate?nickname=${values.nickname}`)
-        const { isValid } = await validationRes.json()
 
-        if (isValid) {
-            const res = await fetch(`${siteUrl}/api/account/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values),
-            })
+        const res = await fetch(new URL('/api/account/login', siteUrl), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+        })
 
-            if (res.ok) {
-                const { token } = await res.json()
-                document.cookie = `token=${token}`
-                alert("로그인 성공!")
-                router.push('/chat/main')
-            } else {
-                alert("로그인 실패!")
-            }
+        if (res.ok) {
+            const { token } = await res.json()
+            document.cookie = `token=${token}`
+            alert("로그인 성공!")
+            router.push('/chat/main')
         } else {
-            form.setError("nickname", {
-                type: "manual",
-                message: "사용자 이름이 이미 존재합니다.",
-            })
+            alert("로그인 실패!")
         }
     }
 
